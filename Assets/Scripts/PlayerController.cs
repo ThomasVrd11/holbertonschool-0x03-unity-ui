@@ -30,6 +30,10 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKey("escape"))
+        {
+            SceneManager.LoadScene("menu");
+        }
         if (health == 0)
             {
                 GameOver();
