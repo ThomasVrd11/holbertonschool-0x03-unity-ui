@@ -1,60 +1,57 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-[SerializeField] private float speed = 5f;
-private Rigidbody rb;
-private int score = 0;
-[SerializeField] private int health = 5;
-    void Start()
+    [SerializeField] private float speed = 5.0f;
+    [SerializeField] Rigidbody rb;
+    
+
+    public Text scoreText;
+    public int health = 5;
+    private int score = 0;
+
+    void FixedUpdate()
     {
-        // Get the Rigidbody component
-        rb = GetComponent<Rigidbody>();
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+
+        Vector3 move = new Vector3(horizontalInput, 0, verticalInput);
+        rb.linearVelocity = new Vector3(horizontalInput * speed, rb.linearVelocity.y, verticalInput * speed);
     }
 
     void Update()
     {
         if (health == 0)
-        {
-            Debug.Log("Game Over!");
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-    }
-    void FixedUpdate()
-    {
-        // Get the input from the player
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
-
-        // Create a new Vector3 to store the movement
-        Vector3 movement = new Vector3(moveHorizontal, 0, moveVertical);
-
-        // Add a force to the Rigidbody
-        rb.AddForce(movement * speed);
+            {
+                Debug.Log("Game Over!");
+                SceneManager.LoadScene(this.gameObject.scene.name);
+            }
     }
 
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Pickup"))
         {
             score++;
-            Debug.Log("Score: " + score + "\nCollided with: " + other.name);
-            Destroy(other.gameObject);
-        }
-
-        if (other.gameObject.CompareTag("Trap"))
-        {
-            health--;
-            Debug.Log("Health: " + health + "\nCollided with: " + other.name);
+            SetScoreText();
+            //Debug.Log($"Score: {score}");
             other.gameObject.SetActive(false);
         }
-
-        if (other.gameObject.CompareTag("Goal"))
+        else if (other.gameObject.CompareTag("Trap"))
+        {
+            health--;
+            Debug.Log($"Health: {health}");
+        }
+        else if (other.gameObject.CompareTag("Goal"))
         {
             Debug.Log("You win!");
         }
+    }
 
-
+    private void SetScoreText()
+    {
+        scoreText.text = $"Score: {score}";
     }
 }
