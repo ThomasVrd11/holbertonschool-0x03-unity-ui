@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speed = 5.0f;
     [SerializeField] Rigidbody rb;
     
-
+    public Text healthText;
     public Text scoreText;
     public int health = 5;
     private int score = 0;
@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviour
         else if (other.gameObject.CompareTag("Trap"))
         {
             health--;
+            SetHealthText();
             Debug.Log($"Health: {health}");
         }
         else if (other.gameObject.CompareTag("Goal"))
@@ -54,4 +55,10 @@ public class PlayerController : MonoBehaviour
     {
         scoreText.text = $"Score: {score}";
     }
+
+    private void SetHealthText()
+    {
+        healthText.text = $"Health: {health}";
+    }
 }
+
