@@ -8593,6 +8593,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 20
   rb: {fileID: 1978972748}
+  WinLoseText: {fileID: 617306367}
+  WinLoseBG: {fileID: 1694225304}
   healthText: {fileID: 1469396252}
   scoreText: {fileID: 1936884780}
   health: 5

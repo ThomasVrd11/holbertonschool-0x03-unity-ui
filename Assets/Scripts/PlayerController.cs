@@ -1,17 +1,24 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
+
+    #region Variables
+
     [SerializeField] private float speed = 5.0f;
     [SerializeField] Rigidbody rb;
-    
+    public Text WinLoseText;
+    public Image WinLoseBG;
     public Text healthText;
     public Text scoreText;
     public int health = 5;
     private int score = 0;
 
+    #endregion
+    #region Methods
     void FixedUpdate()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
@@ -25,8 +32,8 @@ public class PlayerController : MonoBehaviour
     {
         if (health == 0)
             {
-                Debug.Log("Game Over!");
-                SceneManager.LoadScene(this.gameObject.scene.name);
+                GameOver();
+                StartCoroutine(LoadScene(3));
             }
     }
 
@@ -36,18 +43,16 @@ public class PlayerController : MonoBehaviour
         {
             score++;
             SetScoreText();
-            //Debug.Log($"Score: {score}");
             other.gameObject.SetActive(false);
         }
         else if (other.gameObject.CompareTag("Trap"))
         {
             health--;
             SetHealthText();
-            Debug.Log($"Health: {health}");
         }
         else if (other.gameObject.CompareTag("Goal"))
         {
-            Debug.Log("You win!");
+            RestartGame();
         }
     }
 
@@ -60,5 +65,31 @@ public class PlayerController : MonoBehaviour
     {
         healthText.text = $"Health: {health}";
     }
+    
+    private IEnumerator LoadScene(float seconds)
+    {
+        // wait for specified duration
+        yield return new WaitForSeconds(seconds);
+        // reload the active scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private void GameOver()
+    {   
+        WinLoseBG.gameObject.SetActive(true);
+        WinLoseText.gameObject.SetActive(true);
+        WinLoseText.text = "Game Over!";
+        WinLoseBG.color = Color.red;
+    }
+    private void RestartGame()
+    {
+        WinLoseBG.gameObject.SetActive(true);
+            WinLoseText.gameObject.SetActive(true);
+            WinLoseText.text = "You Win!";
+            WinLoseBG.color = Color.green;
+            WinLoseText.color = Color.black;
+        StartCoroutine(LoadScene(3));
+    }
+    #endregion
 }
 
